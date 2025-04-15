@@ -1,0 +1,48 @@
+[project]
+name = "audio-processor"
+version = "0.1.0"
+description = "A tool for processing audio data"
+authors = [
+    {name = "User"}
+]
+readme = "README.md"
+requires-python = "^3.10"
+dependencies = [
+    "ffmpeg-python (>=0.2.0,<0.3.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+ruff = "^0.11.5"
+mypy = "^1.15.0"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "I", "W", "N", "B", "UP"]
+ignore = []
+src = ["audio_processor", "tests"]
+
+[tool.ruff.isort]
+known-first-party = ["audio_processor"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+strict_optional = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
