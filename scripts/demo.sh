@@ -19,7 +19,7 @@ TARGET_SEGMENT_LENGTH=2
 # Run the audio generation and processing pipeline
 python scripts/generate_test_audio.py \
   --target-segment-length "$TARGET_SEGMENT_LENGTH" \
-  --frequency 440 | \
+  --use-amen-break | \
   poetry run python -m audio_processor.main \
   --output output/test.m3u8 \
   --target-segment-length "$TARGET_SEGMENT_LENGTH"
