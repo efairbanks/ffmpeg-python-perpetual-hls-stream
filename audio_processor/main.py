@@ -11,13 +11,14 @@ from typing import Optional
 import ffmpeg
 
 
-def process_audio(output_file: str, sample_rate: int = 44100, channels: int = 2) -> None:
+def process_audio(output_file: str, sample_rate: int = 44100, channels: int = 2, target_segment_length: int = 2) -> None:
     """Process raw audio data from stdin and write to a wav file.
 
     Args:
         output_file: Path to the output wav file
         sample_rate: Sample rate of the audio (default: 44100)
         channels: Number of audio channels (default: 2)
+        target_segment_length: Target segment length in seconds for HLS output (default: 2)
     """
     try:
         # Read raw PCM data from stdin
@@ -25,7 +26,10 @@ def process_audio(output_file: str, sample_rate: int = 44100, channels: int = 2)
             ffmpeg
             .input("pipe:0", format="s16le", acodec="pcm_s16le", 
                    ar=str(sample_rate), ac=str(channels))
-            .output(output_file, format="wav")
+            .output(output_file, format="hls", 
+                    hls_time=target_segment_length, hls_list_size=5, 
+                    hls_flags="delete_segments",
+                    hls_delete_threshold=10)
             .overwrite_output()
             .run_async(pipe_stdin=True)
         )
@@ -59,7 +63,7 @@ def process_audio(output_file: str, sample_rate: int = 44100, channels: int = 2)
 def main() -> None:
     """Parse command line arguments and start audio processing."""
     parser = argparse.ArgumentParser(
-        description="Process raw audio data from stdin and write to a wav file."
+        description="Process raw audio data from stdin and write to an HLS stream."
     )
     parser.add_argument(
         "--output", "-o", 
@@ -78,13 +82,20 @@ def main() -> None:
         default=2, 
         help="Number of audio channels (default: 2)"
     )
+    parser.add_argument(
+        "--target-segment-length", "-t", 
+        type=int, 
+        default=2, 
+        help="Target segment length in seconds for HLS output (default: 2)"
+    )
     
     args = parser.parse_args()
     
     process_audio(
         output_file=args.output,
         sample_rate=args.sample_rate,
-        channels=args.channels
+        channels=args.channels,
+        target_segment_length=args.target_segment_length
     )
 
 
