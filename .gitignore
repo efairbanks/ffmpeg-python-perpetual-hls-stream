@@ -1,0 +1,6 @@
+**.m3u
+output/**
+**.ts
+.DS_Store
+**/.DS_Store
+**.wav
