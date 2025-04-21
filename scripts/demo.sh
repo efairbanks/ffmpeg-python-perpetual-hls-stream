@@ -7,6 +7,9 @@ cd "$(dirname "$0")/.." || exit 1
 # Create output directory if it doesn't exist
 mkdir -p output
 
+# Delete existing playlist and segments
+rm -f output/*.m3u8 output/*.ts
+
 # Generate test audio data in real-time and pipe it to the audio processor
 echo "Generating real-time test audio and processing it to output/test.m3u8..."
 
